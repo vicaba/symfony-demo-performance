@@ -1,0 +1,22 @@
+version: '2'
+
+networks:
+  demo:
+
+services:
+  app:
+    build: .
+    volumes:
+      - ".:/var/www/html/"
+      - "./php.ini:/usr/local/etc/php/php.ini"
+    ports:
+      - "8081:80"
+    networks:
+      - demo
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - demo

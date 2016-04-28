@@ -11,6 +11,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Cache\RedisCache;
 use AppBundle\Entity\Comment;
 use AppBundle\Entity\Post;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
@@ -40,8 +41,13 @@ class BlogController extends Controller
      */
     public function indexAction($page)
     {
-        $posts = $this->getDoctrine()->getRepository('AppBundle:Post')->findLatest($page);
-
+        $cache = new RedisCache();
+        if ($cache->get($cache->getKey($page))) {
+            $posts = $cache->get($cache->getKey($page));
+        } else {
+            $posts = $this->getDoctrine()->getRepository('AppBundle:Post')->findLatest($page);
+            $cache->set($cache->getKey($page), $posts, 3600);
+        }
         return $this->render('blog/index.html.twig', array('posts' => $posts));
     }
 

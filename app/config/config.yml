@@ -45,7 +45,7 @@ framework:
     trusted_proxies: ~
     session:
         # handler_id set to null will use default session handler from php.ini
-        handler_id:  ~
+        handler_id:  snc_redis.session.handler
     fragments:       ~
     http_method_override: true
     assets: ~
@@ -90,3 +90,15 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+# Redis Client
+snc_redis:
+    clients:
+        default:
+            type: predis
+            alias: default
+            dsn: redis://localhost
+    session:
+        client: default
+        prefix: foo
+        ttl: 1200
